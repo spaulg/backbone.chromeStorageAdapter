@@ -200,8 +200,7 @@
         },
 
         /**
-         * Minimum storageProxy plugin interface requirement conforming
-         * to Backbone.sync function signature.
+         * Implement Backbone.sync function signature.
          *
          * @param method Sync method
          * @param model Backbone model or collection
