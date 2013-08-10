@@ -1,5 +1,5 @@
 
-# chrome.storage API storage adapter
+# chrome.storage API Storage Adapter
 
 A storage adapter for backbone.js for storage of data with the chrome.storage API
 that Google have made specifically for Chrome browser plugins.
