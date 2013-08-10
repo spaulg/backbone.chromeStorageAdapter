@@ -18,10 +18,7 @@ be omitted for using local storage.
 
 ```javascript
 var model = Backbone.Model.extend({
-    initialize: function()
-    {
-        this.chromeStorage = new Backbone.ChromeStorage('MyNamespace', Backbone.ChromeStorage.StorageArea.LOCAL);
-    },
+     this.chromeStorage = new Backbone.ChromeStorage('MyNamespace', Backbone.ChromeStorage.StorageArea.LOCAL),
 
      sync: function(method, model, options)
      {
@@ -34,10 +31,7 @@ To store data using the sync storage area:
 
 ```javascript
 var model = Backbone.Model.extend({
-    initialize: function()
-    {
-        this.chromeStorage = new Backbone.ChromeStorage('MyNamespace', Backbone.ChromeStorage.StorageArea.SYNC);
-    },
+    this.chromeStorage = new Backbone.ChromeStorage('MyNamespace', Backbone.ChromeStorage.StorageArea.SYNC),
 
     sync: function(method, model, options)
     {
