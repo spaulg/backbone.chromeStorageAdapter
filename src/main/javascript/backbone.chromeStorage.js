@@ -94,7 +94,7 @@
                 // Notify callbacks if defined
                 if (chrome.runtime.lastError == null && options.success != null) {
                     options.success(model);
-                } else if (options.errback != null) {
+                } else if (options.error != null) {
                     options.error(model);
                 }
             }
@@ -143,7 +143,7 @@
                 if (callbackCount == 2 && success && options.success != null) {
                     // Success
                     options.success(model);
-                } else if (callbackCount == 2) {
+                } else if (callbackCount == 2 && !success && options.error != null) {
                     // Error
                     options.error(model, errors);
                 }
@@ -164,11 +164,9 @@
 
                 // Remove item from storage
                 this._getChromeStorage().remove([model.id], apiCallback);
-            } else {
+            } else if (options.error != null) {
                 // Nothing to remove, notify error callback if defined
-                if (options.errback != null) {
-                    options.errback('Model id is not defined');
-                }
+                options.error('Model id is not defined');
             }
         },
 
