@@ -18,18 +18,26 @@
 (function() {
     'use strict';
 
-    Backbone.LocalStorage2 = function() {
-
+    /**
+     * localStorage Backbone storage adapter
+     *
+     * @param keyNamespace storage namespace prefix
+     * @constructor
+     */
+    Backbone.LocalStorage2 = function(keyNamespace) {
+        this._keyNamespace = keyNamespace;
     };
 
     Backbone.LocalStorage2.prototype = {
+        _keyNamespace: null,
+
         /**
          * Minimum storageProxy plugin interface requirement conforming
          * to Backbone.sync function signature.
          *
-         * @param method
-         * @param model
-         * @param options
+         * @param method Sync method
+         * @param model Backbone model or collection
+         * @param options Options
          */
         sync: function(method, model, options) {
 
