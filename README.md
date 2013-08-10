@@ -36,7 +36,7 @@ To store data using the sync storage area:
 var model = Backbone.Model.extend({
     initialize: function()
     {
-        this.chromeStorage = new Backbone.ChromeStorage('MyNamespace', Backbone.ChromeStorage.StorageArea.LOCAL);
+        this.chromeStorage = new Backbone.ChromeStorage('MyNamespace', Backbone.ChromeStorage.StorageArea.SYNC);
     },
 
     sync: function(method, model, options)
