@@ -232,11 +232,13 @@
          */
         sync: function(method, model, options) {
             switch (method) {
-                case 'update':
+                case 'update':  return this._updateModel(model, options);
                 case 'create':  return this._updateModel(model, options);
                 case 'read':    return this._readModel(model, options);
                 case 'delete':  return this._deleteModel(model, options);
             }
+
+            throw new TypeError('Unknown method ' + method + ' in sync');
         }
     };
 })();
