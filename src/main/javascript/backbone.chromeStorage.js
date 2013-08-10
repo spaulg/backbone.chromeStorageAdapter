@@ -82,42 +82,6 @@
         },
 
         /**
-         * Low level API set call
-         *
-         * @param data Data to set
-         * @param callback Callback on completion
-         * @private
-         */
-        _set: function(data, callback)
-        {
-            this._getChromeStorage().set(data, callback);
-        },
-
-        /**
-         * Low level API get call
-         *
-         * @param keys Keys of data to retrieve
-         * @param callback Callback on completion
-         * @private
-         */
-        _get: function(keys, callback)
-        {
-            this._getChromeStorage().get(keys, callback);
-        },
-
-        /**
-         * Low level API remove call
-         *
-         * @param keys Keys to remove
-         * @param callback Callback on completion
-         * @private
-         */
-        _remove: function(keys, callback)
-        {
-            this._getChromeStorage().remove(key, callback);
-        },
-
-        /**
          * Add or update an existing key/value pair in storage
          *
          * @param model Model of data to update
@@ -127,10 +91,11 @@
         _updateModel: function(model, options)
         {
             function apiCallback() {
-                if (chrome.runtime.lastError == null && options.callback != null) {
-                    options.callback.call(model);
+                // Notify callbacks if defined
+                if (chrome.runtime.lastError == null && options.success != null) {
+                    options.success(model);
                 } else if (options.errback != null) {
-                    options.errback.call(model);
+                    options.error(model);
                 }
             }
 
@@ -146,12 +111,19 @@
             var data = [];
             data[this._keyNamespace] = this._recordIndex;
             data[id] = model.attributes;
-            this._set(data, apiCallback);
+            this._getChromeStorage().set(data, apiCallback);
 
             // Set id to model
             model.id = id;
         },
 
+        /**
+         * Remove the model from storage
+         *
+         * @param model Model of data to remove
+         * @param options Storage options
+         * @private
+         */
         _deleteModel: function(model, options)
         {
             var callbackCount = 0;
@@ -167,13 +139,13 @@
                     errors.push(chrome.runtime.lastError);
                 }
 
-                // Notify callback if defined
-                if (callbackCount == 2 && success && options.callback != null) {
+                // Notify callbacks if defined
+                if (callbackCount == 2 && success && options.success != null) {
                     // Success
-                    options.callback.call(model);
+                    options.success(model);
                 } else if (callbackCount == 2) {
                     // Error
-                    options.errback.call(model, errors);
+                    options.error(model, errors);
                 }
             }
 
@@ -188,10 +160,10 @@
                 // Update record index with item removed in storage
                 var data = [];
                 data[this._keyNamespace] = this._recordIndex;
-                this._set(data, apiCallback);
+                this._getChromeStorage().set(data, apiCallback);
 
                 // Remove item from storage
-                this._remove([model.id], apiCallback);
+                this._getChromeStorage().remove([model.id], apiCallback);
             } else {
                 // Nothing to remove, notify errback if defined
                 if (options.errback != null) {
@@ -200,6 +172,13 @@
             }
         },
 
+        /**
+         * Read model form storage
+         *
+         * @param model Model with id to read
+         * @param options Storage options
+         * @private
+         */
         _readModel: function(model, options)
         {
             function apiCallback(items) {
@@ -208,17 +187,17 @@
                     model.set(items[model.id]);
 
                     // Notify callback if defined
-                    if (options.callback != null) {
-                        options.callback.call(model);
+                    if (options.success != null) {
+                        options.success(model);
                     }
-                } else if (options.errback != null) {
-                    options.errback.call(model, chrome.runtime.lastError);
+                } else if (options.error != null) {
+                    options.error(model, chrome.runtime.lastError);
                 }
             }
 
             // If the model has an id, attempt to retrieve it from storage
             if (model.id != null) {
-                this._get([model.id], apiCallback);
+                this._getChromeStorage().get([model.id], apiCallback);
             }
         },
 
