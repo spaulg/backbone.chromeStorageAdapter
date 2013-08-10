@@ -1,0 +1,48 @@
+<!--
+    Cleaning after a package.
+        mvn clean
+
+    Behaviour driven development test harness for writing
+    Jasmine unit test spec files. Starts a web server at
+    http://localhost:8234 to run the unit tests within.
+        mvn jasmine:bdd
+
+    Run the Jasmine unit test spec files automatically.
+        mvn test
+
+-->
+
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>uk.co.codezen</groupId>
+    <artifactId>backbone.localStorage2</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <build>
+        <plugins>
+            <!-- Jasmine test runner -->
+            <plugin>
+                <groupId>com.github.searls</groupId>
+                <artifactId>jasmine-maven-plugin</artifactId>
+                <version>1.3.1.2</version>
+
+                <configuration>
+                    <preloadSources>
+                        <source>src/libs/jquery.js</source>
+                        <source>src/libs/underscore.js</source>
+                        <source>src/libs/backbone.js</source>
+                    </preloadSources>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
