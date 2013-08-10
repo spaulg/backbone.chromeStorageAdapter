@@ -165,7 +165,7 @@
                 // Remove item from storage
                 this._getChromeStorage().remove([model.id], apiCallback);
             } else {
-                // Nothing to remove, notify errback if defined
+                // Nothing to remove, notify error callback if defined
                 if (options.errback != null) {
                     options.errback('Model id is not defined');
                 }
