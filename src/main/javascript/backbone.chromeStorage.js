@@ -94,8 +94,8 @@
                 // Notify callbacks if defined
                 if (chrome.runtime.lastError == null && options.success != null) {
                     options.success(model);
-                } else if (options.error != null) {
-                    options.error(model);
+                } else if (chrome.runtime.lastError != null && options.error != null) {
+                    options.error(model, chrome.runtime.lastError);
                 }
             }
 
@@ -166,7 +166,7 @@
                 this._getChromeStorage().remove([model.id], apiCallback);
             } else if (options.error != null) {
                 // Nothing to remove, notify error callback if defined
-                options.error('Model id is not defined');
+                options.error(model, 'Model id is not defined');
             }
         },
 
