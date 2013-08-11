@@ -85,92 +85,50 @@
         },
 
         /**
-         * Convert the model or collection input object
-         * into two lists of models and model ids
-         *
-         * @param modelOrCollection Model or collection object
-         * @param includeNullIdModels Include models with null or empty string ids
-         * @returns {Array}
-         * @private
-         */
-        _cloneModelOrCollection: function(modelOrCollection, includeNullIdModels)
-        {
-            var modelIdList = [];
-            var modelList = [];
-
-            if (modelOrCollection instanceof Backbone.Collection) {
-                // Copy the list of models. This ensures that the async callback
-                // does not end up with a different list once the get
-                // call returns.
-                for (var i = 0; i < modelOrCollection.models.length; i++) {
-                    if (includeNullIdModels ||
-                        (!includeNullIdModels && modelOrCollection.models[i].id != null && modelOrCollection.models[i].id != '')) {
-                        modelIdList.push(modelOrCollection.models[i].id);
-                        modelList.push(modelOrCollection.models[i]);
-                    }
-                }
-            } else if (includeNullIdModels || (!includeNullIdModels && modelOrCollection.id != null && modelOrCollection.id != '')) {
-                modelIdList.push(modelOrCollection.id);
-                modelList.push(modelOrCollection);
-            }
-
-            return [modelIdList, modelList];
-        },
-
-        /**
          * Add or update an existing key/value pair in storage
          *
-         * @param modelOrCollection Model of data to update
+         * @param model Model of data to update
          * @param options Storage options
          * @private
          */
-        _updateRecord: function(modelOrCollection, options)
+        _updateRecord: function(model, options)
         {
-            var clonedModelOrCollection = this._cloneModelOrCollection(modelOrCollection, true);
-            var modelList = clonedModelOrCollection[1];
-            var i = 0;
-            var data = {};
-
             function apiCallback() {
                 // Notify callbacks if defined
                 if (chrome.runtime.lastError == null && options.success != null) {
-                    options.success(modelOrCollection);
+                    options.success(model.attributes);
                 } else if (chrome.runtime.lastError != null && options.error != null) {
-                    options.error(modelOrCollection, chrome.runtime.lastError);
+                    options.error(model, chrome.runtime.lastError);
                 }
             }
 
-            if (modelList.length > 0) {
-                for (i = 0; i < modelList.length; i++) {
-                    // Get or generate an Id
-                    var id = modelList[i].id || this._generateUuid();
-                    modelList[i].id = id;
+            // Get or generate an Id
+            var id = model.id || this._generateUuid();
 
-                    // Update record index with new id if not found
-                    if ($.inArray(id, this._recordIndex) == -1) {
-                        this._recordIndex.push(id);
-                    }
-
-                    data[id] = modelList[i].attributes;
-                }
-
-                // Update index if adding, and add/update record
-                data[this._keyNamespace] = this._recordIndex;
-                this._getChromeStorage().set(data, apiCallback);
+            // Update record index with new id if not found
+            if ($.inArray(id, this._recordIndex) == -1) {
+                this._recordIndex.push(id);
             }
+
+            // Update index if adding, and add/update record
+            var data = {};
+            data[this._keyNamespace] = this._recordIndex;
+            data[id] = model.attributes;
+            this._getChromeStorage().set(data, apiCallback);
+
+            // Set id to model
+            model.id = id;
         },
 
         /**
          * Remove the modelOrCollection from storage
          *
-         * @param modelOrCollection Model of data to remove
+         * @param model Model of data to remove
          * @param options Storage options
          * @private
          */
-        _deleteRecord: function(modelOrCollection, options)
+        _deleteRecord: function(model, options)
         {
-            var clonedModelOrCollection = this._cloneModelOrCollection(modelOrCollection, false);
-            var modelIdList = clonedModelOrCollection[0];
             var callbackCount = 0;
             var success = true;
             var errors = [];
@@ -185,34 +143,33 @@
                 }
 
                 // Notify callbacks if defined
-                if (callbackCount == 2 && success && options.success != null) {
+                if (callbackCount == 2 && success) {
                     // Success
-                    options.success(modelOrCollection);
+                    options.success({});
                 } else if (callbackCount == 2 && !success && options.error != null) {
                     // Error
-                    options.error(modelOrCollection, errors);
+                    options.error(model, errors);
                 }
             }
 
-            // Find record index position and remove for each model id
-            for (var i = 0; i < modelIdList.length; i++) {
-                var recordPosition = $.inArray(modelIdList[i].id, this._recordIndex);
+            // If the model has an id, attempt to remove it from storage
+            if (model.id != null && model.id != '') {
+                // Find record index position and remove
+                var recordPosition = $.inArray(model.id, this._recordIndex);
                 if (recordPosition != -1) {
                     this._recordIndex.splice(recordPosition, 1);
                 }
-            }
 
-            if (modelIdList.length > 0) {
                 // Update record index with item removed in storage
                 var data = {};
                 data[this._keyNamespace] = this._recordIndex;
                 this._getChromeStorage().set(data, apiCallback);
 
-                // Remove items from storage
-                this._getChromeStorage().remove(modelIdList, apiCallback);
+                // Remove item from storage
+                this._getChromeStorage().remove([model.id], apiCallback);
             } else if (options.error != null) {
                 // Nothing to remove, notify error callback if defined
-                options.error(modelOrCollection, 'Zero models to remove.');
+                options.error(model, 'Model id is not defined');
             }
         },
 
@@ -225,31 +182,39 @@
          */
         _readRecord: function(modelOrCollection, options)
         {
-            // TODO: Read new models stored within chrome.storage by reading the recordindex and updating if a collection
+            var that = this;
 
-            var clonedModelOrCollection = this._cloneModelOrCollection(modelOrCollection, false);
-            var modelIdList = clonedModelOrCollection[0];
-            var modelList = clonedModelOrCollection[1];
-
-            function apiCallback(items) {
+            function recordReadCallback(items) {
                 if (chrome.runtime.lastError == null) {
-                    // Update all the modelOrCollection attributes with the items retrieved
-                    for (var i = 0; i < modelList.length; i++) {
-                        modelList[i].set(items[modelIdList[i]]);
+                    // Format items into object to pass to success
+                    // and reply to success callback with resp
+                    var resp = [];
+
+                    for (var key in items) {
+                        resp.push(items[key]);
                     }
 
-                    // Notify callback if defined
-                    if (options.success != null) {
-                        options.success(modelOrCollection);
-                    }
+                    options.success(resp);
                 } else if (options.error != null) {
                     options.error(modelOrCollection, chrome.runtime.lastError);
                 }
             }
 
-            // If there are models to read, read them
-            if (modelIdList.length > 0) {
-                this._getChromeStorage().get(modelIdList, apiCallback);
+            function recordIndexReadCallback(items) {
+                if (chrome.runtime.lastError == null) {
+                    // Attempt to read all records for all id's in the record index
+                    var recordIndex = items[that._keyNamespace] || null;
+                    that._getChromeStorage().get([recordIndex], recordReadCallback);
+                } else if (options.error != null) {
+                    options.error(modelOrCollection, chrome.runtime.lastError);
+                }
+            }
+
+            if (modelOrCollection instanceof Backbone.Collection) {
+                // Update record index with item removed in storage
+                this._getChromeStorage().get([this._keyNamespace], recordIndexReadCallback);
+            } else {
+                this._getChromeStorage().get([modelOrCollection.id], recordReadCallback);
             }
         },
 
