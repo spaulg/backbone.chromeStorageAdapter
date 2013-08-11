@@ -93,19 +93,19 @@
          */
         _updateRecord: function(model, options)
         {
-            // Get or generate an Id
-            var id = model.id || this._generateUuid();
-
             function apiCallback() {
                 // Notify callbacks if defined
                 if (chrome.runtime.lastError == null) {
                     var attributes = model.attributes;
-                    attributes.id = id;
                     options.success(attributes);
                 } else {
                     options.error(chrome.runtime.lastError);
                 }
             }
+
+            // Get or generate an Id
+            var id = model.id || this._generateUuid();
+            model.id = id;
 
             // Update record index with new id if not found
             if ($.inArray(id, this._recordIndex) == -1) {
@@ -160,7 +160,7 @@
             if (!model.isNew()) {
                 // Find record index position and remove
                 var recordPosition = $.inArray(model.id, this._recordIndex);
-                if (recordPosition != -1) {
+                if (recordPosition >= 0) {
                     this._recordIndex.splice(recordPosition, 1);
                 }
 
@@ -216,7 +216,12 @@
                     modelOrCollection.trigger('request', modelOrCollection, [recordIndex], options);
 
                     // Get data
-                    that._getChromeStorage().get([recordIndex], recordReadCallback);
+                    if (recordIndex == null) {
+                        // No records to retrieve, fire read callback with zero results
+                        recordReadCallback({});
+                    } else {
+                        that._getChromeStorage().get(recordIndex, recordReadCallback);
+                    }
                 } else {
                     options.error(chrome.runtime.lastError);
                 }
