@@ -91,7 +91,7 @@
          * @param options Storage options
          * @private
          */
-        _updateModel: function(model, options)
+        _updateRecord: function(model, options)
         {
             function apiCallback() {
                 // Notify callbacks if defined
@@ -127,7 +127,7 @@
          * @param options Storage options
          * @private
          */
-        _deleteModel: function(model, options)
+        _deleteRecord: function(model, options)
         {
             var callbackCount = 0;
             var success = true;
@@ -180,7 +180,7 @@
          * @param options Storage options
          * @private
          */
-        _readModel: function(model, options)
+        _readRecord: function(model, options)
         {
             function apiCallback(items) {
                 if (chrome.runtime.lastError == null) {
@@ -212,10 +212,10 @@
         sync: function(method, model, options)
         {
             switch (method) {
-                case 'update':  return this._updateModel(model, options);
-                case 'create':  return this._updateModel(model, options);
-                case 'read':    return this._readModel(model, options);
-                case 'delete':  return this._deleteModel(model, options);
+                case 'update':  return this._updateRecord(model, options);
+                case 'create':  return this._updateRecord(model, options);
+                case 'read':    return this._readRecord(model, options);
+                case 'delete':  return this._deleteRecord(model, options);
             }
 
             throw new TypeError('Unknown method ' + method + ' in sync');
