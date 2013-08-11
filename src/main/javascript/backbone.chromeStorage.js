@@ -19,7 +19,7 @@
     'use strict';
 
     /**
-     * Chrome Storage Backbone storage adapter
+     * chrome.storage Backbone storage adapter
      *
      * @param keyNamespace storage namespace prefix
      * @param storageArea Storage area to use
@@ -60,9 +60,9 @@
         _recordIndex: [],
 
         /**
-         * Get the Chrome storage namespace pointer
+         * Get the chrome.storage.* namespace pointer
          *
-         * @returns {Object} Chrome storage namespace object
+         * @returns {Object} chrome.storage.* namespace object
          * @private
          */
         _getChromeStorage: function()
@@ -85,7 +85,7 @@
         },
 
         /**
-         * Add or update an existing key/value pair in storage
+         * Add or update an existing model in storage
          *
          * @param model Model of data to update
          * @param options Storage options
@@ -125,7 +125,7 @@
         },
 
         /**
-         * Remove the modelOrCollection from storage
+         * Remove a model from storage
          *
          * @param model Model of data to remove
          * @param options Storage options
@@ -181,7 +181,7 @@
         },
 
         /**
-         * Read modelOrCollection from storage
+         * Read a model or collection from storage
          *
          * @param modelOrCollection Model with id to read
          * @param options Storage options
