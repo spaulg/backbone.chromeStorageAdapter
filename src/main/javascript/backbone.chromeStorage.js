@@ -102,8 +102,8 @@
                     var attributes = model.attributes;
                     attributes.id = id;
                     options.success(attributes);
-                } else if (chrome.runtime.lastError != null && options.error != null) {
-                    options.error(model, chrome.runtime.lastError);
+                } else {
+                    options.error(chrome.runtime.lastError);
                 }
             }
 
@@ -150,9 +150,9 @@
                 if (callbackCount == 2 && success) {
                     // Success
                     options.success({});
-                } else if (callbackCount == 2 && !success && options.error != null) {
+                } else if (callbackCount == 2 && !success) {
                     // Error
-                    options.error(model, errors);
+                    options.error(errors);
                 }
             }
 
@@ -174,9 +174,9 @@
 
                 // Remove item from storage
                 this._getChromeStorage().remove([model.id], apiCallback);
-            } else if (options.error != null) {
+            } else {
                 // Nothing to remove, notify error callback if defined
-                options.error(model, 'Model id is not defined');
+                options.error('Model id is not defined');
             }
         },
 
@@ -202,8 +202,8 @@
                     }
 
                     options.success(resp);
-                } else if (options.error != null) {
-                    options.error(modelOrCollection, chrome.runtime.lastError);
+                } else {
+                    options.error(chrome.runtime.lastError);
                 }
             }
 
@@ -217,8 +217,8 @@
 
                     // Get data
                     that._getChromeStorage().get([recordIndex], recordReadCallback);
-                } else if (options.error != null) {
-                    options.error(modelOrCollection, chrome.runtime.lastError);
+                } else {
+                    options.error(chrome.runtime.lastError);
                 }
             }
 
