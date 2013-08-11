@@ -153,7 +153,7 @@
             }
 
             // If the model has an id, attempt to remove it from storage
-            if (model.id != null) {
+            if (model.id != null && model.id != '') {
                 // Find record index position and remove
                 var recordPosition = $.inArray(model.id, this._recordIndex);
                 if (recordPosition != -1) {
