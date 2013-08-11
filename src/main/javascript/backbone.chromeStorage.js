@@ -116,6 +116,11 @@
             var data = {};
             data[this._keyNamespace] = this._recordIndex;
             data[id] = model.attributes;
+
+            // Trigger request event
+            model.trigger('request', model, data, options);
+
+            // Set data
             this._getChromeStorage().set(data, apiCallback);
         },
 
@@ -158,6 +163,9 @@
                 if (recordPosition != -1) {
                     this._recordIndex.splice(recordPosition, 1);
                 }
+
+                // Trigger request event
+                model.trigger('request', model, model.id, options);
 
                 // Update record index with item removed in storage
                 var data = {};
@@ -203,6 +211,11 @@
                 if (chrome.runtime.lastError == null) {
                     // Attempt to read all records for all id's in the record index
                     var recordIndex = items[that._keyNamespace] || null;
+
+                    // Trigger request event
+                    modelOrCollection.trigger('request', modelOrCollection, [recordIndex], options);
+
+                    // Get data
                     that._getChromeStorage().get([recordIndex], recordReadCallback);
                 } else if (options.error != null) {
                     options.error(modelOrCollection, chrome.runtime.lastError);
@@ -213,6 +226,10 @@
                 // Update record index with item removed in storage
                 this._getChromeStorage().get([this._keyNamespace], recordIndexReadCallback);
             } else {
+                // Trigger request event
+                modelOrCollection.trigger('request', modelOrCollection, [this._keyNamespace], options);
+
+                // Get data
                 this._getChromeStorage().get([modelOrCollection.id], recordReadCallback);
             }
         },
