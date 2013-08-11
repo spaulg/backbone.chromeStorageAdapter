@@ -171,7 +171,7 @@
         },
 
         /**
-         * Read model form storage
+         * Read model from storage
          *
          * @param model Model with id to read
          * @param options Storage options
