@@ -108,7 +108,7 @@
             }
 
             // Update index if adding, and add/update record
-            var data = [];
+            var data = {};
             data[this._keyNamespace] = this._recordIndex;
             data[id] = model.attributes;
             this._getChromeStorage().set(data, apiCallback);
@@ -158,7 +158,7 @@
                 }
 
                 // Update record index with item removed in storage
-                var data = [];
+                var data = {};
                 data[this._keyNamespace] = this._recordIndex;
                 this._getChromeStorage().set(data, apiCallback);
 
