@@ -25,7 +25,7 @@
      * @param storageArea Storage area to use
      * @constructor
      */
-    Backbone.ChromeStorage = function(keyNamespace, storageArea)
+    Backbone.ChromeStorageAdapter = function(keyNamespace, storageArea)
     {
         if (typeof keyNamespace == 'string' && keyNamespace != '') {
             this._keyNamespace = keyNamespace;
@@ -47,13 +47,13 @@
      * Enum for StorageArea type. Should be when declaring
      * the storage area when constructing the storage adapter
      */
-    Backbone.ChromeStorage.StorageArea =
+    Backbone.ChromeStorageAdapter.StorageArea =
     {
         SYNC: 'sync',
         LOCAL: 'local'
     };
 
-    Backbone.ChromeStorage.prototype =
+    Backbone.ChromeStorageAdapter.prototype =
     {
         _keyNamespace: null,
         _chromeStorage: null,

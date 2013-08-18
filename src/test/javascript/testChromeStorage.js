@@ -24,7 +24,7 @@ describe('A check to confirm models', function() {
         failure: false,
 
         initialize: function() {
-            this.chromeStorage = new Backbone.ChromeStorage('testNamespace', Backbone.ChromeStorage.StorageArea.LOCAL);
+            this.chromeStorage = new Backbone.ChromeStorageAdapter('testNamespace', Backbone.ChromeStorageAdapter.StorageArea.LOCAL);
         },
 
         sync: function(method, model, options) {
@@ -148,7 +148,7 @@ describe('A check to confirm models', function() {
         failure: false,
 
         initialize: function() {
-            this.chromeStorage = new Backbone.ChromeStorage('testNamespace', Backbone.ChromeStorage.StorageArea.LOCAL);
+            this.chromeStorage = new Backbone.ChromeStorageAdapter('testNamespace', Backbone.ChromeStorageAdapter.StorageArea.LOCAL);
         },
 
         sync: function(method, model, options) {

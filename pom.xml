@@ -15,7 +15,7 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
     <groupId>uk.co.codezen</groupId>
-    <artifactId>backbone.chromeStorage</artifactId>
+    <artifactId>backbone.chromeStorageAdapter</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
     <build>

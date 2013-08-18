@@ -10,7 +10,7 @@ Designed to optionally be used with the backbone.storageProxy.js plugin.
 
 ```html
 <script src="backbone.js"></script>
-<script src="backbone.chromeStorage.js"></script>
+<script src="backbone.chromeStorageAdapter.js"></script>
 ```
 
 To store data using the local storage area only. The storage area parameter can also
@@ -18,7 +18,7 @@ be omitted for using local storage.
 
 ```javascript
 var model = Backbone.Model.extend({
-     this.chromeStorage = new Backbone.ChromeStorage('MyNamespace', Backbone.ChromeStorage.StorageArea.LOCAL),
+     this.chromeStorage = new Backbone.ChromeStorageAdapter('MyNamespace', Backbone.ChromeStorageAdapter.StorageArea.LOCAL),
 
      sync: function(method, model, options)
      {
@@ -31,7 +31,7 @@ To store data using the sync storage area:
 
 ```javascript
 var model = Backbone.Model.extend({
-    this.chromeStorage = new Backbone.ChromeStorage('MyNamespace', Backbone.ChromeStorage.StorageArea.SYNC),
+    this.chromeStorage = new Backbone.ChromeStorageAdapter('MyNamespace', Backbone.ChromeStorageAdapter.StorageArea.SYNC),
 
     sync: function(method, model, options)
     {
@@ -46,7 +46,7 @@ To use alongside backbone.storageProxy.js:
 var model = Backbone.Model.extend({
     initialize: function()
     {
-        this.storageProxy = new Backbone.StorageProxy(this, new Backbone.ChromeStorage('MyNamespace');
+        this.storageProxy = new Backbone.StorageProxy(this, new Backbone.ChromeStorageAdapter('MyNamespace');
     }
 });
 ```
