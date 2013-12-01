@@ -28,7 +28,6 @@
 
                 <configuration>
                     <preloadSources>
-                        <source>src/libs/jquery.js</source>
                         <source>src/libs/underscore.js</source>
                         <source>src/libs/backbone.js</source>
                     </preloadSources>

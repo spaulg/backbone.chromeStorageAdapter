@@ -19,6 +19,23 @@
     'use strict';
 
     /**
+     * jQuery inArray alternative
+     *
+     * @param key Array key to be found
+     * @param list Array to search
+     * @returns {number} Position within array or -1 if not found
+     */
+    function inArray(key, list) {
+        for (var i = 0; i < list.length; i++) {
+            if (i in list && list[i] === key) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    /**
      * chrome.storage Backbone storage adapter
      *
      * @param keyNamespace storage namespace prefix
@@ -108,7 +125,7 @@
             model.id = id;
 
             // Update record index with new id if not found
-            if ($.inArray(id, this._recordIndex) == -1) {
+            if (inArray(id, this._recordIndex) == -1) {
                 this._recordIndex.push(id);
             }
 
@@ -159,7 +176,7 @@
             // If the model has an id, attempt to remove it from storage
             if (!model.isNew()) {
                 // Find record index position and remove
-                var recordPosition = $.inArray(model.id, this._recordIndex);
+                var recordPosition = inArray(model.id, this._recordIndex);
                 if (recordPosition >= 0) {
                     this._recordIndex.splice(recordPosition, 1);
                 }

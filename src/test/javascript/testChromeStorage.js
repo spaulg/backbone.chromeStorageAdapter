@@ -15,6 +15,8 @@
  limitations under the License.
  */
 
+var localStorageSpace = (localStorageSpace) ? localStorageSpace : {};
+
 describe('A check to confirm models', function() {
     // Reset local storage space
     localStorageSpace = {};
