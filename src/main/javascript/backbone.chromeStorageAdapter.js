@@ -39,7 +39,7 @@
      * chrome.storage Backbone storage adapter
      *
      * @param keyNamespace storage namespace prefix
-     * @param storageArea Storage area to use
+     * @param {string=} storageArea Storage area to use
      * @constructor
      */
     Backbone.ChromeStorageAdapter = function(keyNamespace, storageArea)
